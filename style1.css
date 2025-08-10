@@ -1,144 +1,120 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body with blurred background image */
 body {
-    background: linear-gradient(to right, #5FBFF1, #00FFFF, #54A8D4, #75c0e8);
-    font-family: 'Poppins', sans-serif;
+    font-family: Arial, sans-serif;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
-}
 
-/* For the form container */
-.container {
-    background-color: white;
-    width: 30rem;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0.5rem 0.5rem 0.3rem rgba(0, 0, 0, 0.2);
-    text-align: center;
-}
-
-/* Headings */
-h1 {
-    margin-bottom: 20px;
-}
-
-/* Input group for alignment */
-.input-group {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1.5rem;
-}
-
-label {
-    width: 30%;
-    text-align: left;
-    font-weight: bold;
-}
-
-.input-wrapper {
-    width: 70%;
+    /* We'll use a pseudo-element to blur background */
     position: relative;
+    overflow: hidden;
 }
 
-.input-wrapper i {
+body::before {
+    content: "";
     position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #ccc;
-}
-
-/* Input fields */
-.input-wrapper input {
+    top: 0;
+    left: 0;
     width: 100%;
-    padding: 10px 10px 10px 35px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    box-sizing: border-box;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    height: 100%;
+    background: url('https://digitalsynopsis.com/wp-content/uploads/2014/06/supercar-wallpapers-bugatti-3.jpg') no-repeat center center fixed;
+    background-size: cover;
+    filter: blur(6px); /* Blur the background */
+    transform: scale(1.05); /* Slight zoom so edges aren't visible after blur */
+    z-index: -1;
+    animation: zoomBg 20s ease-in-out infinite alternate;
 }
 
-.input-wrapper input:focus {
-    border-color: #008CBA;
-    box-shadow: 0 0 5px rgba(0, 140, 186, 0.5);
-    outline: none;
+/* Background zoom animation */
+@keyframes zoomBg {
+    from { background-size: 100%; }
+    to { background-size: 110%; }
 }
 
-/* Submit button */
-button[type="submit"] {
-    background-color: #008CBA;
+/* register container */
+.register-container {
+    width: 400px;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.6); /* Darker form background */
+    backdrop-filter: blur(4px); /* Slight blur inside the form for glass effect */
+    border-radius: 15px;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.5);
+    animation: float3D 6s ease-in-out infinite;
     color: white;
-    padding: 0.6rem 1.2rem;
+}
+
+/* 3D floating animation */
+@keyframes float3D {
+    0% { transform: rotateX(0deg) rotateY(0deg) translateY(0); }
+    50% { transform: rotateX(3deg) rotateY(-3deg) translateY(-10px); }
+    100% { transform: rotateX(0deg) rotateY(0deg) translateY(0); }
+}
+
+.register-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 28px;
+    color: #fff;
+    text-shadow: 0px 0px 10px rgba(255,255,255,0.6);
+}
+
+/* Inputs */
+.register-container input[type="text"],
+.register-container input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
     border: none;
-    border-radius: 0.3rem;
+    border-radius: 8px;
+    font-size: 16px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    outline: none;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.register-container input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.register-container input:focus {
+    background: rgba(255,255,255,0.25);
+    transform: scale(1.05);
+}
+
+/* Button */
+.register-container input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(45deg, #00ff99, #0099ff);
+    border: none;
+    color: white;
+    font-size: 18px;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-button[type="submit"]:hover {
-    background-color: #0069D9;
+.register-container input[type="submit"]:hover {
+    transform: scale(1.08);
+    box-shadow: 0px 0px 20px rgba(0,255,255,0.7);
 }
 
-a {
-    display: block;
-    margin-top: 1rem;
-    color: #008CBA;
-    text-decoration: none;
+/* Smooth fade-in effect */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-a:hover {
-    text-decoration: underline;
+.register-container form {
+    animation: fadeIn 1s ease-in-out;
 }
 
-/* Responsive Design */
-/* For screens with width 768px or below (tablet and mobile) */
-@media (max-width: 768px) {
-    .container {
-        width: 70%;
-        padding: 1.5rem;
-    }
-   
-    label {
-        width: 100%;
-        text-align: left;
-        margin-bottom: 5px;
-    }
-
-    .input-wrapper {
-        width: 100%;
-    }
-    
-    button[type="submit"] {
-        width: 30%;
-        padding: 0.8rem;
-    }
-}
-
-/* For screens with width 480px or below (mobile) */
-@media (max-width: 480px) {
-    .container {
-        width: 70%;
-        padding: 1rem;
-    }
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    label {
-        font-size: 0.9rem;
-    }
-
-    .input-wrapper input {
-        padding: 10px 10px 10px 30px;
-        font-size: 0.9rem;
-    }
-
-    button[type="submit"] {
-        width: 30%;
-        font-size: 1rem;
-    }
-    
-}
