@@ -67,8 +67,7 @@ body::before {
 }
 
 /* Inputs */
-.register-container input[type="text"],
-.register-container input[type="password"] {
+.register-container input:not([type="submit"]) {
     width: 100%;
     padding: 12px;
     margin: 12px 0;
@@ -117,4 +116,5 @@ body::before {
 .register-container form {
     animation: fadeIn 1s ease-in-out;
 }
+
 
