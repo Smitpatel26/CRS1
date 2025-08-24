@@ -27,7 +27,7 @@ body::before {
     height: 100%;
     background: url('https://digitalsynopsis.com/wp-content/uploads/2014/06/supercar-wallpapers-bugatti-3.jpg') no-repeat center center fixed;
     background-size: cover;
-    filter: blur(6px); /* Blur the background */
+    filter: blur(1px); /* Blur the background */
     transform: scale(1.05); /* Slight zoom so edges aren't visible after blur */
     z-index: -1;
     animation: zoomBg 20s ease-in-out infinite alternate;
@@ -44,7 +44,7 @@ body::before {
     width: 400px;
     padding: 40px;
     background: rgba(0, 0, 0, 0.6); /* Darker form background */
-    backdrop-filter: blur(4px); /* Slight blur inside the form for glass effect */
+    backdrop-filter: blur(2px); /* Slight blur inside the form for glass effect */
     border-radius: 15px;
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.5);
     animation: float3D 6s ease-in-out infinite;
@@ -80,11 +80,13 @@ body::before {
     transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.register-container input::placeholder {
+
+
+.register-container input:not([type="submit"])::placeholder {
     color: rgba(255, 255, 255, 0.7);
 }
 
-.register-container input:focus {
+.register-container input:not([type="submit"]):focus {
     background: rgba(255,255,255,0.25);
     transform: scale(1.05);
 }
@@ -107,6 +109,20 @@ body::before {
     box-shadow: 0px 0px 20px rgba(0,255,255,0.7);
 }
 
+.register-container a {
+    color: #00ffcc;         /* Change link color */
+    text-decoration: none;  /* Remove underline */
+    margin: 10px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.register-container a:hover {
+    color: #ffffff;         /* Hover color */
+    text-decoration: underline;
+}
+
+
 /* Smooth fade-in effect */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
@@ -116,5 +132,3 @@ body::before {
 .register-container form {
     animation: fadeIn 1s ease-in-out;
 }
-
-
