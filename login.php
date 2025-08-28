@@ -1,44 +1,35 @@
 <?php
-session_start();  // Start the session to store user data
+session_start();
 
 $login_error = "";
 $username = $password = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
 
     // Database connection
-    $servername = 'localhost';
-    $db_username = 'root';
-    $db_password = '';
-    $dbname = 'ksk';
-    $conn = mysqli_connect($servername, $db_username, $db_password, $dbname);
-
-    // Check for connection errors
-    if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
+    $conn = new mysqli('localhost', 'root', '', 'ksk');
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
     }
 
-    // Check if the user exists (email or phone number) in the database
-    $query = "SELECT * FROM login WHERE email='$username' OR phone='$username'";
-    $result = mysqli_query($conn, $query);
+    // Find user by email OR phone
+    $stmt = $conn->prepare("SELECT * FROM login WHERE email = ? OR phone = ?");
+    $stmt->bind_param("ss", $username, $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if (mysqli_num_rows($result) == 1) {
-        // Fetch the user data
-        $user = mysqli_fetch_assoc($result);
+    if ($result && $result->num_rows === 1) {
+        $user = $result->fetch_assoc();
 
-        // Hash the password using MD5 for comparison
-        $hashed_password = md5($password);
+        // Verify password securely
+        if (password_verify($password, $user['password'])) {
+            // Success → set session
+            $_SESSION['customer_id'] = $user['customer_id'];
+            $_SESSION['username'] = $user['email'];
 
-        // Verify the password
-        if ($hashed_password === $user['password']) {
-            // Set session variables for the logged-in user
-            $_SESSION['customer_id'] = $user['customer_id'];  // Store the customer ID
-            $_SESSION['username'] = $user['email'];  // Store the email as username
-
-            // Redirect to home.php after successful login
-            header("Location: index.php");
+            header("Location: home.php");
             exit();
         } else {
             $login_error = "Invalid username or password.";
@@ -47,9 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $login_error = "Invalid username or password.";
     }
 
-    mysqli_close($conn);
+    $stmt->close();
+    $conn->close();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
