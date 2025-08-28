@@ -1,66 +1,66 @@
 <?php
-session_start();  // Start the session
+session_start();
 
 $errors = [];
 $fullname = $email = $phone = $password = $repassword = $address = $city = $zip_code = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitRegistration'])) {
-    // Trim all inputs
     $fullname   = trim($_POST['fullname']);
     $email      = trim($_POST['email']);
     $phone      = trim($_POST['phone']);
     $password   = trim($_POST['password']);
     $repassword = trim($_POST['repassword']);
-    $address    = trim($_POST['address']); 
+    $address    = trim($_POST['address']);
     $city       = trim($_POST['city']);
     $zip_code   = trim($_POST['zip_code']);
-    
-    // Validations
-    if (empty($fullname)) $errors['fullname'] = "Full name is required.";
 
-    if (empty($email)) $errors['email'] = "Email is required.";
-
-    if (empty($phone) || !preg_match("/^[6-9][0-9]{9}$/", $phone)) $errors['phone'] = "Valid phone number required.";
-
-    if (empty($password)) {
-        $errors['password'] = "Password is required.";
-    } elseif (!preg_match("/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,15}$/", $password)) {
-        $errors['password'] = "Password must include at least 1 uppercase, 1 lowercase, 1 digit (5–15 chars).";
+    // Database connection
+    $conn = new mysqli('localhost', 'root', '', 'ksk');
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
     }
 
-    if ($password !== $repassword) $errors['repassword'] = "Passwords do not match.";
+    // Validate empty fields
+    if (empty($fullname) || empty($email) || empty($phone) || empty($password) || empty($repassword) || empty($address) || empty($city) || empty($zip_code)) {
+        $errors[] = "All fields are required.";
+    }
 
-    if (empty($address)) $errors['address'] = "Address is required.";
+    // Validate password match
+    if ($password !== $repassword) {
+        $errors[] = "Passwords do not match.";
+    }
 
-    if (empty($city)) $errors['city'] = "City is required.";
+    // Check if email or phone already exists
+    $stmt = $conn->prepare("SELECT * FROM login WHERE email = ? OR phone = ?");
+    $stmt->bind_param("ss", $email, $phone);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if (empty($zip_code)) $errors['zip_code'] = "Zip code is required.";
+    if ($result->num_rows > 0) {
+        $errors[] = "Email or Phone already exists. Please use another.";
+    }
 
+    // If no errors → insert user
     if (empty($errors)) {
-        // Hash the password securely
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        // Database connection
-        $conn = new mysqli('localhost', 'root', '', 'ksk');
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        // Prepared statement (prevents SQL injection)
         $stmt = $conn->prepare("INSERT INTO login (fullname, email, phone, password, address, city, zip_code) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sssssss", $fullname, $email, $phone, $hashed_password, $address, $city, $zip_code);
 
         if ($stmt->execute()) {
-            echo "<script>alert('Registration successful! Please login.'); window.location='login.php';</script>";
+            $_SESSION['success_message'] = "Registration successful! You can now log in.";
+            header("Location: login.php");
+            exit();
         } else {
-            echo "Error: " . $stmt->error;
+            $errors[] = "Error: " . $stmt->error;
         }
-
-        $stmt->close();
-        $conn->close();
     }
+
+    $stmt->close();
+    $conn->close();
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -100,6 +100,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitRegistration']))
 <body>
 
 <div class="container registration-container">
+
+<body>
+
+<div class="container registration-container">
+    
+    <!-- Intro Section -->
+    <div class="intro-section" style="text-align:center; margin-bottom: 20px;">
+        <h1 style="color:#2c3e50; font-size:28px;">🚘 Welcome to CarGo-Car Rental System</h1>
+        <p style="font-size:16px; color:#555;">
+            Book cars easily and quickly with our hassle-free online car rental service.
+        </p>
+    </div>
+
+
     <div class="register-form">
         <h1>Sign up</h1>
 <form action="" method="post" id="registerForm" onsubmit="return validateForm()">
@@ -192,6 +206,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submitRegistration']))
     </div>
 
     <button type="submit" name="submitRegistration">Register</button>
+    <p>Already have an account? <a href="login.php">Login</a></p>
 </form>
 
     </div>
