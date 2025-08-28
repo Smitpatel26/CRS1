@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Find user by email OR phone
-    $stmt = $conn->prepare("SELECT * FROM login WHERE email = ? OR phone = ?");
+    $stmt = $conn->prepare("SELECT * FROM login WHERE email = ? OR phone = ? LIMIT 1");
     $stmt->bind_param("ss", $username, $username);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -23,15 +23,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result && $result->num_rows === 1) {
         $user = $result->fetch_assoc();
 
-        // Verify password securely
+        // ✅ Case 1: Password is hashed
         if (password_verify($password, $user['password'])) {
-            // Success → set session
             $_SESSION['customer_id'] = $user['customer_id'];
             $_SESSION['username'] = $user['email'];
-
             header("Location: home.php");
             exit();
-        } else {
+        } 
+        // ✅ Case 2: Password was stored in plain text (old accounts)
+        elseif ($password === $user['password']) {
+            // Re-hash it and update DB for future logins
+            $newHash = password_hash($password, PASSWORD_DEFAULT);
+            $update = $conn->prepare("UPDATE login SET password=? WHERE customer_id=?");
+            $update->bind_param("si", $newHash, $user['customer_id']);
+            $update->execute();
+
+            $_SESSION['customer_id'] = $user['customer_id'];
+            $_SESSION['username'] = $user['email'];
+            header("Location: home.php");
+            exit();
+        } 
+        else {
             $login_error = "Invalid username or password.";
         }
     } else {
@@ -60,10 +72,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h1>Sign in</h1>
         <form action="" method="post">
             <div class="input-group">
-                <label for="username">Username (Email):</label>
+                <label for="username">Username (Email or Phone):</label>
                 <div class="input-wrapper">
                     <i class="fas fa-user"></i>
-                    <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" placeholder="Enter Email" required>
+                    <input type="text" id="username" name="username" 
+                           value="<?php echo htmlspecialchars($username); ?>" 
+                           placeholder="Enter Email or Phone" required>
                 </div>
             </div>
             <div class="input-group">
@@ -75,10 +89,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <button type="submit">Login</button>
             <?php if ($login_error): ?>
-                <span class="error-message"><?php echo $login_error; ?></span>
+                <span class="error-message" style="color:red;"><?php echo $login_error; ?></span>
             <?php endif; ?>
-            <a href="register.php">For Register click here</a>
-            <a href="forgotpassword.php">Forget Password</a>
+            <p><a href="register.php">For Register click here</a></p>
+            <p><a href="forgotpassword.php">Forget Password</a></p>
         </form>
     </div>
 </div>
