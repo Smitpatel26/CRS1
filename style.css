@@ -1,0 +1,235 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.hero-section {
+    background-image: url('images/car_bg.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.navbar {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+}
+
+.navbar ul li {
+    margin: 0 10px;
+}
+
+.navbar ul li a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.navbar ul li a:hover {
+    color: lightgray;
+    transform: scale(1.1);
+}
+
+.logo img {
+    max-width: 10%; /* Make the logo responsive */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.navbar {
+    display: flex;
+    align-items: center; /* Align items vertically */
+}
+
+.navbar a {
+    margin-left: 20px; /* Add space between the logo and navigation links */
+}
+
+/* About Us Section */
+.about-us {
+    padding: 50px 0;
+    background-color: #f4f4f4;
+    text-align: center;
+}
+
+.about-us h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.about-us p {
+    font-size: 1.2rem;
+    color: #333;
+    max-width: 800px;
+    margin: auto;
+}
+
+/* Our Cars Section */
+.our-cars {
+    padding: 50px 0;
+    background-color: #fff;
+    text-align: center;
+}
+
+.our-cars h2 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+}
+
+.car-list {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.car-item {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    width: 30%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.car-item:hover {
+    transform: translateY(-10px);
+}
+
+.car-item img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.car-item h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.car-item p {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Footer Section */
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 50px 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-about, .footer-links, .footer-contact {
+    width: 30%;
+    margin-bottom: 20px;
+}
+
+.footer-about p, .footer-contact p {
+    font-size: 1rem;
+    color: #ccc;
+}
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links ul li {
+    margin-bottom: 10px;
+}
+
+.footer-links ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.footer-links ul li a:hover {
+    color: #56ccf2;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.footer-bottom p {
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.slogan {
+    position: absolute; /* Absolute positioning within the hero section */
+    bottom: 40px; /* Place near the bottom */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust for perfect centering */
+    text-align: center;
+}
+
+.slogan h1 {
+    font-size: 3rem;
+    color: rgb(251, 250, 250);
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); /* Add shadow for better readability */
+    font-family: 'Arial', sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .slogan h1 {
+        font-size: 2.2rem; /* Smaller font size for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .slogan h1 {
+        font-size: 1.8rem; /* Further reduce font size for mobile devices */
+    }
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .navbar ul {
+        flex-direction: column; /* Stack links vertically on smaller screens */
+        align-items: center; /* Center align the links */
+    }
+
+    .navbar ul li {
+        margin: 5px 0; /* Adjust margin for vertical spacing */
+    }
+
+    .booking-form input, .booking-form button {
+        width: 100%; /* Make inputs full width on small screens */
+    }
+
+    .booking-form {
+        margin-bottom: 20px; /* Adjust margin for smaller screens */
+    }
+
+    #search-input {
+        width: 150px; /* Adjust search input width */
+    }
+}
+
+@media (max-width: 480px) {
+    #search-input {
+        width: 100%; /* Full width for search input on very small screens */
+    }
+}
