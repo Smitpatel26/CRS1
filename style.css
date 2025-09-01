@@ -6,7 +6,7 @@ body, html {
 }
 
 .hero-section {
-    background-image: url('images/car_bg.jpg');
+    background-image: url('Images/car_bg.jpg');
     background-size: cover;
     background-position: center;
     height: 100vh;
