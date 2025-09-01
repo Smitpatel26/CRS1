@@ -10,7 +10,7 @@
     <div class="hero-section">
         <div class="navbar">
             <a href="index.php" class="logo">
-                <img src="images\user_logo.png" alt="Logo" />
+                <img src="\CRS\Images\logo.png" alt="Logo" />
             </a>
             <ul>
                 <li><a href="index.php">Home</a></li>
@@ -41,22 +41,22 @@
             <h2>Our Cars</h2>
             <div class="car-list">
                 <div class="car-item">
-                    <img src="images\hp1.jpg" alt="Luxury Car 1">
+                    <img src="/CRS/Images/hp1.jpg" alt="Luxury Car 1">
                     <h3>Mercedes-Benz S-Class</h3>
                     <p>The epitome of luxury and technology, perfect for both business and pleasure.</p>
                 </div>
                 <div class="car-item">
-                    <img src="images\hp2.jpg" alt="Luxury Car 2">
+                    <img src="/CRS/Images/hp2.jpg" alt="Luxury Car 2">
                     <h3>BMW 7 Series</h3>
                     <p>A combination of elegance and performance for the ultimate driving experience.</p>
                 </div>
                 <div class="car-item">
-                    <img src="images\hp3.jpg" alt="Luxury Car 3">
+                    <img src="/CRS/Images/hp3.jpg" alt="Luxury Car 3">
                     <h3>Audi A8</h3>
                     <p>Luxury, power, and cutting-edge innovation come together in this premium sedan.</p>
                 </div>
                 <div class="car-item">
-                    <img src="images\hp4.webp" alt="Luxury Car 4">
+                    <img src="/CRS/Images/hp4.webp" alt="Luxury Car 4">
                     <h3>Rolls-Royce</h3>
                     <p>Where Luxury Meets the Road: Rent a Rolls-Royce.</p>
                 </div>
