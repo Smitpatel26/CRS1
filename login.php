@@ -1,60 +1,55 @@
 <?php
-session_start();
+session_start();  // Start the session to store user data
 
 $login_error = "";
 $username = $password = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
     // Database connection
-    $conn = new mysqli('localhost', 'root', '', 'ksk');
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+    $servername = 'localhost';
+    $db_username = 'root';
+    $db_password = '';
+    $dbname = 'car_rental_db';
+    $conn = mysqli_connect($servername, $db_username, $db_password, $dbname);
+
+    // Check for connection errors
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
     }
 
-    // Find user by email OR phone
-    $stmt = $conn->prepare("SELECT * FROM login WHERE email = ? OR phone = ? LIMIT 1");
-    $stmt->bind_param("ss", $username, $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Check if the user exists (email or phone number) in the database
+    $query = "SELECT * FROM customers WHERE email='$username' OR phone='$username'";
+    $result = mysqli_query($conn, $query);
 
-    if ($result && $result->num_rows === 1) {
-        $user = $result->fetch_assoc();
+    if (mysqli_num_rows($result) == 1) {
+        // Fetch the user data
+        $user = mysqli_fetch_assoc($result);
 
-        // ✅ Case 1: Password is hashed
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['customer_id'] = $user['customer_id'];
-            $_SESSION['username'] = $user['email'];
-            header("Location: home.php");
+        // Hash the password using MD5 for comparison
+        $hashed_password = md5($password);
+
+        // Verify the password
+        if ($hashed_password === $user['password']) {
+            // Set session variables for the logged-in user
+            $_SESSION['customer_id'] = $user['customer_id'];  // Store the customer ID
+            $_SESSION['username'] = $user['email'];  // Store the email as username
+
+            // Redirect to home.php after successful login
+            header("Location: index.php");
             exit();
-        } 
-        // ✅ Case 2: Password was stored in plain text (old accounts)
-        elseif ($password === $user['password']) {
-            // Re-hash it and update DB for future logins
-            $newHash = password_hash($password, PASSWORD_DEFAULT);
-            $update = $conn->prepare("UPDATE login SET password=? WHERE customer_id=?");
-            $update->bind_param("si", $newHash, $user['customer_id']);
-            $update->execute();
-
-            $_SESSION['customer_id'] = $user['customer_id'];
-            $_SESSION['username'] = $user['email'];
-            header("Location: home.php");
-            exit();
-        } 
-        else {
+        } else {
             $login_error = "Invalid username or password.";
         }
     } else {
         $login_error = "Invalid username or password.";
     }
 
-    $stmt->close();
-    $conn->close();
+    mysqli_close($conn);
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -72,12 +67,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h1>Sign in</h1>
         <form action="" method="post">
             <div class="input-group">
-                <label for="username">Username (Email or Phone):</label>
+                <label for="username">Username (Email):</label>
                 <div class="input-wrapper">
                     <i class="fas fa-user"></i>
-                    <input type="text" id="username" name="username" 
-                           value="<?php echo htmlspecialchars($username); ?>" 
-                           placeholder="Enter Email or Phone" required>
+                    <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" placeholder="Enter Email" required>
                 </div>
             </div>
             <div class="input-group">
@@ -89,10 +82,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <button type="submit">Login</button>
             <?php if ($login_error): ?>
-                <span class="error-message" style="color:red;"><?php echo $login_error; ?></span>
+                <span class="error-message"><?php echo $login_error; ?></span>
             <?php endif; ?>
-            <p><a href="register.php">For Register click here</a></p>
-            <p><a href="forgotpassword.php">Forget Password</a></p>
+            <a href="register.php">For Register click here</a>
+            <a href="forgotpassword.php">Forget Password</a>
         </form>
     </div>
 </div>
